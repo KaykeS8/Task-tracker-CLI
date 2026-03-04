@@ -5,17 +5,16 @@ import entities.Task;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TaskRepository {
 
     private final List<Task> tasks = new ArrayList<>();
+    private final Path path = Path.of("File", "tasks.json");
 
     public void save(Task task) {
         try {
-            Path path = Paths.get("task-tracker-cli/File/tasks.json");
             String content = Files.readString(path).trim();
 
             String taskJson = task.toJson();
@@ -28,14 +27,20 @@ public class TaskRepository {
             }
 
             Files.writeString(path, content);
+            tasks.add(task);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error saving task", e);
         }
-        tasks.add(task);
     }
 
     public Task find(int id) {
        return tasks.stream().filter( task -> task.getId() == id).findFirst().orElse(null);
+    }
+
+    public Task updateTask(int id, String description) {
+        Task task = find(id);
+        task.setDescription(description);
+        return task;
     }
 
     public void destroy(int id) {
