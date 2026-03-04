@@ -21,20 +21,18 @@ public class TaskService {
 
     public Task add(String description) {
         Task task = new Task(description);
-        ensureFileExist();
         taskRepository.save(task);
         return task;
     }
 
     public Task update(int id, String description) {
         Task task = getTaskOrThrow(id);
-        task.setDescription(description);
-        return task;
+        return taskRepository.updateTask(task.getId(), description);
     }
 
     public void remove(int id) {
         Task task = getTaskOrThrow(id);
-        taskRepository.destroy(id);
+        taskRepository.destroy(task.getId());
     }
 
     public void changeStatus(String status, int id) {
