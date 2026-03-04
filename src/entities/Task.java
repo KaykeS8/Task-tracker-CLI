@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 
 public class Task {
 
-    private static int COUNTER = 1;
+    private static int COUNTER = 0;
 
     private int id;
     private String description;
@@ -34,6 +34,7 @@ public class Task {
 
     public void setDescription(String description) {
         this.description = description;
+        setUpdatedAt(LocalDateTime.now());
     }
 
     public EnumTask getStatus() {
@@ -42,6 +43,7 @@ public class Task {
 
     public void setStatus(EnumTask status) {
         this.status = status;
+        setUpdatedAt(LocalDateTime.now());
     }
 
     public LocalDateTime getCreatedAt() {
@@ -58,6 +60,16 @@ public class Task {
 
     public void setUpdatedAt(LocalDateTime updateAt) {
         this.updatedAt = updateAt;
+    }
+
+    public String toJson() {
+        String safeDescription = description.replace("\"", "\\\"");
+
+        return "{"
+                + "\"id\":" + id + ","
+                + "\"description\":\"" + safeDescription + "\","
+                + "\"status\":\"" + status + "\""
+                + "}";
     }
 
     @Override
