@@ -41,6 +41,11 @@ public class TaskService {
             case "mark-in-progress" -> task.setStatus(EnumTask.IN_PROGRESS);
             case "mark-done" -> task.setStatus(EnumTask.DONE);
         }
+        taskRepository.persistAll();
+    }
+
+    public Task findTask(int id) {
+       return taskRepository.find(id);
     }
 
     public void all() {
