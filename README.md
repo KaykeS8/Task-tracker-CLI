@@ -1,9 +1,6 @@
 # 🧠 Task Tracker CLI
 
 
-
-\
-
 A simple and efficient **Command Line Interface (CLI)** application for managing tasks, built with **Java**.
 
 This project allows users to create, update, delete, and track tasks directly from the terminal.
