@@ -13,4 +13,13 @@ public enum EnumTask {
             default -> "invalid status";
         };
     }
+
+    public static EnumTask statusToEnum(String status) {
+        return switch (status) {
+            case "TODO" -> TODO;
+            case "IN_PROGRESS" -> IN_PROGRESS;
+            case "DONE" -> DONE;
+            default -> throw new IllegalStateException("Unexpected value: " + status);
+        };
+    }
 }
