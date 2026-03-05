@@ -39,10 +39,12 @@ public class TaskCLI {
                 task = service.findTask(Integer.parseInt(args[1]));
                 System.out.println("Task changed status with succefully (ID: ) " + task.getId() + ")");
                 break;
-
-//                FIX LIST
             case "list":
-                service.all();
+                if (args.length > 1) {
+                    service.all(args[1]);
+                } else {
+                    service.all();
+                }
                 break;
             default:
                 System.out.println("invalid argument");
