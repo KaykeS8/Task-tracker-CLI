@@ -36,8 +36,11 @@ public class TaskCLI {
 
             case "mark-in-progress", "mark-done":
                 service.changeStatus(args[0], Integer.parseInt(args[1]));
+                task = service.findTask(Integer.parseInt(args[1]));
+                System.out.println("Task changed status with succefully (ID: ) " + task.getId() + ")");
                 break;
 
+//                FIX LIST
             case "list":
                 service.all();
                 break;
