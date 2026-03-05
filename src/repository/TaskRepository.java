@@ -10,27 +10,22 @@ import java.util.List;
 
 public class TaskRepository {
 
-    private final List<Task> tasks = new ArrayList<>();
+    private List<Task> tasks;
     private final Path path = Path.of("File", "tasks.json");
 
+    public TaskRepository() {
+        this.tasks = loadTasks();
+        int maxId = tasks.stream()
+                .mapToInt(Task::getId)
+                .max()
+                .orElse(0);
+
+        Task.setCounter(maxId);
+    }
+
     public void save(Task task) {
-        try {
-            String content = Files.readString(path).trim();
-
-            String taskJson = task.toJson();
-
-            if (content.equals("[]")) {
-                content = "[" + taskJson + "]";
-            } else {
-                content = content.substring(0, content.length() - 1); // remove ]
-                content = content + "," + taskJson + "]";
-            }
-
-            Files.writeString(path, content);
-            tasks.add(task);
-        } catch (IOException e) {
-            throw new RuntimeException("Error saving task", e);
-        }
+        tasks.add(task);
+        persist();
     }
 
     public Task find(int id) {
@@ -39,15 +34,66 @@ public class TaskRepository {
 
     public Task updateTask(int id, String description) {
         Task task = find(id);
-        task.setDescription(description);
+        if (task != null) {
+            task.setDescription(description);
+            persist();
+        }
         return task;
     }
 
     public void destroy(int id) {
         tasks.removeIf(task -> task.getId() == id);
+        persist();
     }
 
     public List<Task> findAll() {
         return tasks;
     }
+
+    public List<Task> loadTasks() {
+        List<Task> tasks_stored = new ArrayList<>();
+        try {
+            String jsonContent = Files.readString(path);
+            if (jsonContent.equals("[]")) return tasks_stored;
+            String[] taskList = jsonContent.replace("[", "").replace("]", "").split("},");
+            for (String taskJson : taskList) {
+                if (!taskJson.endsWith("}")) {
+                    taskJson = taskJson + "}";
+                    tasks_stored.add(Task.fromJson(taskJson));
+                } else {
+                    tasks_stored.add(Task.fromJson(taskJson));
+                }
+            }
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return tasks_stored;
+    }
+
+    public void persistAll() {
+        persist();
+    }
+
+    private void persist() {
+        try {
+            StringBuilder json = new StringBuilder();
+            json.append("[");
+
+            for (int i = 0; i < tasks.size(); i++) {
+                json.append(tasks.get(i).toJson());
+                if (i < tasks.size() - 1) {
+                    json.append(",");
+                }
+            }
+
+            json.append("]");
+
+            Files.writeString(path, json.toString());
+
+        } catch (IOException e) {
+            throw new RuntimeException("Error persisting tasks", e);
+        }
+    }
+
 }
