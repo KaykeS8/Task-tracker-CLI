@@ -16,6 +16,8 @@ public class Task {
     private LocalDateTime updatedAt;
 
 
+    public Task(){}
+
     public Task(String description) {
         this.id = ++COUNTER;
         this.description = description;
@@ -26,6 +28,10 @@ public class Task {
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getDescription() {
@@ -68,8 +74,38 @@ public class Task {
         return "{"
                 + "\"id\":" + id + ","
                 + "\"description\":\"" + safeDescription + "\","
-                + "\"status\":\"" + status + "\""
+                + "\"status\":\"" + status + "\","
+                + "\"createdAt\":" + (createdAt != null ? "\"" + createdAt + "\"" : null) + ","
+                + "\"updatedAt\":" + (updatedAt != null ? "\"" + updatedAt + "\"" : null)
                 + "}";
+    }
+
+    public static Task fromJson(String json) {
+
+        Task task = new Task();
+        json = json.trim();
+        json = json.substring(1, json.length() - 1);
+
+        String[] fields = json.split(",");
+
+        for (String item : fields) {
+            String[] keyValue = item.split(":", 2);
+            String key = keyValue[0].replace("\"", "").trim();
+            String value = keyValue[1].replace("\"", "").trim();
+
+            switch (key) {
+                case "id" -> task.setId(Integer.parseInt(value));
+                case "description" -> task.description = value;
+                case "status" -> task.status = EnumTask.statusToEnum(value);
+                case "createdAt" -> task.setCreatedAt(LocalDateTime.parse(value));
+                case "updatedAt" -> task.setUpdatedAt(LocalDateTime.parse(value));
+            }
+        }
+        return task;
+    }
+
+    public static void setCounter(int value) {
+        COUNTER = value;
     }
 
     @Override
