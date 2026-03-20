@@ -6,8 +6,6 @@ A simple and efficient **Command Line Interface (CLI)** application for managing
 This project allows users to create, update, delete, and track tasks directly from the terminal.
 
 It was developed to practice **backend development concepts**, **object-oriented programming**, and **clean architecture** while building a real CLI application.
-
-challenge of: https://roadmap.sh/projects/task-tracker
 ---
 
 # 📌 Features
